@@ -29,7 +29,7 @@ p = e.process()
 
 print(p.recv().decode())
 
-raw_input('attach gdb')
+# raw_input('attach gdb')
 
 # padding for buffer overflow
 padding = b'A' * 40

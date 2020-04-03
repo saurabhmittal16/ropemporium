@@ -63,7 +63,7 @@ p = e.process()
 
 print(p.recv().decode())
 
-raw_input('attach gdb')
+# raw_input('attach gdb')
 
 # solution 2 -> spawn shell
 # st = '/bin/sh'
